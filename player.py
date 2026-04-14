@@ -1,6 +1,7 @@
 import glfw
 from OpenGL.GL import *
 from texture import load_texture
+from audio import AudioPulo
 
 class Player:
 
@@ -18,10 +19,11 @@ class Player:
         self.gravity = 900
         self.jump_force = 450
 
-        # direção do personagem
         self.facing_right = True
-
         self.on_ground = False
+
+        # som
+        self.som_pulo = AudioPulo()
 
         # animação
         self.frames = [
@@ -58,6 +60,7 @@ class Player:
         if glfw.get_key(window, glfw.KEY_SPACE) == glfw.PRESS and self.on_ground:
             self.vel_y = self.jump_force
             self.on_ground = False
+            self.som_pulo.tocar()
 
         self.vel_y -= self.gravity * dt
         self.y += self.vel_y * dt
@@ -67,7 +70,6 @@ class Player:
             self.vel_y = 0
             self.on_ground = True
 
-        # animação andando
         if moving:
             self.frame_time += dt
 
