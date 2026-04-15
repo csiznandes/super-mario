@@ -26,6 +26,7 @@ class Game:
 
         # mundo / fase
         self.background_texture = load_texture("assets/background_mickey.png")
+        self.platform_texture = load_texture("assets/plataforma.png")
 
         self.platforms = [
             Platform(0, 0, 800, 100),
@@ -115,15 +116,24 @@ class Game:
         self.draw_quad(-self.camera_x * 0.3, 0, self.width * 3, self.height)
 
     def draw_platforms(self):
-        glBindTexture(GL_TEXTURE_2D, 0)
-        glColor3f(0.6, 0.3, 0.1)
+        glColor3f(1, 1, 1)
+        glBindTexture(GL_TEXTURE_2D, self.platform_texture)
 
         for p in self.platforms:
             glBegin(GL_QUADS)
+
+            glTexCoord2f(0, 0)
             glVertex2f(p.x - self.camera_x, p.y)
+
+            glTexCoord2f(1, 0)
             glVertex2f(p.x + p.w - self.camera_x, p.y)
+
+            glTexCoord2f(1, 1)
             glVertex2f(p.x + p.w - self.camera_x, p.y + p.h)
+
+            glTexCoord2f(0, 1)
             glVertex2f(p.x - self.camera_x, p.y + p.h)
+
             glEnd()
 
     def draw_lives(self):
@@ -152,3 +162,4 @@ class Game:
 
         # HUD
         self.draw_lives()
+
