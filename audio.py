@@ -4,6 +4,10 @@ import winsound
 ### Classes de Audio do game para eventos ###
 
 
+###################################
+# falta classe para audio do game musica??#
+
+
 class AudioPulo:
 
 
@@ -59,11 +63,3 @@ class AudioGamerover:
         self.caminho,
         winsound.SND_FILENAME | winsound.SND_ASYNC
         )
-
-
-###################################
-#classe para audio do game musica
-
-#
-
-#
