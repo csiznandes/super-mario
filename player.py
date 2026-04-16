@@ -7,8 +7,8 @@ class Player:
 
     def __init__(self):
 
-        self.x = 100
-        self.y = 100
+        self.x = 0
+        self.y = 0
 
         self.w = 64
         self.h = 64
@@ -18,6 +18,7 @@ class Player:
         self.speed = 300
         self.gravity = 900
         self.jump_force = 450
+
 
         self.facing_right = True
         self.on_ground = False
@@ -40,6 +41,7 @@ class Player:
         self.frame_index = 0
         self.frame_time = 0
         self.frame_speed = 0.1
+
 
         self.current_texture = self.frames[0]
 
@@ -65,11 +67,6 @@ class Player:
 
         self.vel_y -= self.gravity * dt
         self.y += self.vel_y * dt
-
-        if self.y <= 100:
-            self.y = 100
-            self.vel_y = 0
-            self.on_ground = True
 
         if moving:
             self.frame_time += dt
