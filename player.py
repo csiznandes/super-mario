@@ -58,9 +58,10 @@ class Player:
             moving = True
 
         if glfw.get_key(window, glfw.KEY_SPACE) == glfw.PRESS and self.on_ground:
+            self.som_pulo.tocar()
             self.vel_y = self.jump_force
             self.on_ground = False
-            self.som_pulo.tocar()
+
 
         self.vel_y -= self.gravity * dt
         self.y += self.vel_y * dt
