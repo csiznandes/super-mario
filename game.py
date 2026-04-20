@@ -4,7 +4,8 @@ from game_platform import Platform
 from ground import criarsolo
 from player import Player
 from texture import load_texture
-from audio import AudioMusica
+from audio import AudioMusica, AudioHit
+from enemy import Enemy
 
 
 class Game:
@@ -16,6 +17,7 @@ class Game:
 
         self.musica_fundo = AudioMusica()
         self.musica_fundo.tocar()
+        self.som_hit = AudioHit()
 
         self.max_lives = 3
         self.lives = 3
@@ -40,6 +42,11 @@ class Game:
             Platform(1200, 350, 120, 20),
         ]
 
+        self.enemies = [
+            Enemy(self.platforms[1]),
+            Enemy(self.platforms[2])
+        ]
+
         self.spawn_x = 100
         self.spawn_y = 150
 
@@ -56,6 +63,7 @@ class Game:
         self.camera_x = 0
 
     def lose_life(self):
+        self.som_hit = AudioHit()
         if self.lives > 0:
             self.lives -= 1
         self.reset_player_position()
@@ -72,6 +80,25 @@ class Game:
         # colisão com plataformas
         for platform in self.platforms:
             platform.check_collision(self.player)
+
+        # Update e Colisão dos inimigos
+        for enemy in self.enemies:
+            enemy.update(dt)
+
+            if enemy.ativo:
+
+                if (self.player.x < enemy.x + enemy.w and
+                        self.player.x + self.player.w > enemy.x and
+                        self.player.y < enemy.y + enemy.h and
+                        self.player.y + self.player.h > enemy.y):
+
+                    #onde ve se foi por cima
+                    if self.player.vel_y < 0 and self.player.y > enemy.y + (enemy.h * 0.5):
+                        enemy.ativo = False  # Mata o inimigo
+                        self.player.vel_y = self.player.jump_force * 0.8 #achei que ficou legal subir
+                        # o player dps de acertar o bicho, qualquer coisa da pra tirar
+                    else:
+                        self.lose_life()
 
         screen_x = self.player.x - self.camera_x
 
@@ -151,6 +178,8 @@ class Game:
         self.draw_background()
         self.draw_ground()
         self.draw_platforms()
+        for enemy in self.enemies:
+            enemy.draw(self.camera_x)
 
         glColor3f(1, 1, 1)
         self.player.draw(self.camera_x)
