@@ -1,10 +1,10 @@
-import glfw
 from OpenGL.GL import *
 
-from player import Player
-from texture import load_texture
 from game_platform import Platform
 from ground import criarsolo
+from player import Player
+from texture import load_texture
+from audio import AudioMusica
 
 
 class Game:
@@ -13,6 +13,9 @@ class Game:
         self.height = height
 
         self.player = Player()
+
+        self.musica_fundo = AudioMusica()
+        self.musica_fundo.tocar()
 
         self.max_lives = 3
         self.lives = 3

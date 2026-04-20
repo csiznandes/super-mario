@@ -7,7 +7,6 @@ import winsound
 ###################################
 # falta classe para audio do game musica??#
 
-
 class AudioPulo:
 
 
@@ -26,13 +25,13 @@ class AudioMusica:
 
 
     def __init__(self):
-        self.caminho = "assets/audio_musica.wav"
+        self.caminho = "assets/mickeyfundo.wav"
 
 
     def tocar(self):
         winsound.PlaySound(
         self.caminho,
-        winsound.SND_FILENAME | winsound.SND_ASYNC
+        winsound.SND_FILENAME | winsound.SND_ASYNC | winsound.SND_LOOP
         )
 
 

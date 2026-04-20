@@ -4,6 +4,7 @@ def criarsolo():
     y = 0
     h = 100
 
+
     return [
         Platform(0, y, 320, h),
         Platform(420, y, 280, h),
