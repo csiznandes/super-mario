@@ -1,3 +1,4 @@
+import glfw
 from OpenGL.GL import *
 
 from game_platform import Platform
@@ -12,6 +13,13 @@ class Game:
     def __init__(self, width, height):
         self.width = width
         self.height = height
+
+        self.state = 0 #Estados do jogo: 0 = menu/lobby, 1 = jogando
+        #Carregar texturas do Menu (certifique-se de ter esses arquivos)
+        self.menu_bg = load_texture("assets/background_mickey.png")
+        self.title_tex = load_texture("assets/mickey_bros.png")
+        self.btn_start_tex = load_texture("assets/start_button.png")
+        self.btn_exit_tex = load_texture("assets/exit_button.png")
 
         self.player = Player()
 
@@ -68,58 +76,75 @@ class Game:
             self.lives -= 1
         self.reset_player_position()
 
-    def update(self, window, dt):
-        self.player.update(window, dt)
-
-        self.player.on_ground = False
-
-        # colisão com solo
-        for ground in self.ground_segments:
-            ground.check_collision(self.player)
-
-        # colisão com plataformas
-        for platform in self.platforms:
-            platform.check_collision(self.player)
-
-        # Update e Colisão dos inimigos
+    def reset_game(self):
+        self.lives = 3
+        self.reset_player_position()
         for enemy in self.enemies:
-            enemy.update(dt)
+            enemy.ativo = True
 
-            if enemy.ativo:
+    def update(self, window, dt):
+        if self.state == 1:  #JOGANDO
 
-                if (self.player.x < enemy.x + enemy.w and
-                        self.player.x + self.player.w > enemy.x and
-                        self.player.y < enemy.y + enemy.h and
-                        self.player.y + self.player.h > enemy.y):
+            self.player.update(window, dt)
 
-                    #onde ve se foi por cima
-                    if self.player.vel_y < 0 and self.player.y > enemy.y + (enemy.h * 0.5):
-                        enemy.ativo = False  # Mata o inimigo
-                        self.player.vel_y = self.player.jump_force * 0.8 #achei que ficou legal subir
-                        # o player dps de acertar o bicho, qualquer coisa da pra tirar
-                    else:
-                        self.lose_life()
+            self.player.on_ground = False
 
-        screen_x = self.player.x - self.camera_x
+            #colisão com solo
+            for ground in self.ground_segments:
+                ground.check_collision(self.player)
 
-        if screen_x > self.right_limit:
-            self.camera_x = self.player.x - self.right_limit
+            #colisão com plataformas
+            for platform in self.platforms:
+                platform.check_collision(self.player)
 
-        if screen_x < self.left_limit:
-            self.camera_x = self.player.x - self.left_limit
+            #Update e Colisão dos inimigos
+            for enemy in self.enemies:
+                enemy.update(dt)
 
-        if self.camera_x < 0:
-            self.camera_x = 0
+                if enemy.ativo:
 
-        if self.player.y < self.fall_limit:
-            self.lose_life()
+                    if (self.player.x < enemy.x + enemy.w and
+                            self.player.x + self.player.w > enemy.x and
+                            self.player.y < enemy.y + enemy.h and
+                            self.player.y + self.player.h > enemy.y):
 
-        if self.lives <= 0:
-            print("GAME OVER")
-            self.lives += 3
-            #chamada da tela de game over
+                        #onde ve se foi por cima
+                        if self.player.vel_y < 0 and self.player.y > enemy.y + (enemy.h * 0.5):
+                            enemy.ativo = False  # Mata o inimigo
+                            self.player.vel_y = self.player.jump_force * 0.8 #achei que ficou legal subir
+                            # o player dps de acertar o bicho, qualquer coisa da pra tirar
+                        else:
+                            self.lose_life()
 
+            screen_x = self.player.x - self.camera_x
 
+            if screen_x > self.right_limit:
+                self.camera_x = self.player.x - self.right_limit
+
+            if screen_x < self.left_limit:
+                self.camera_x = self.player.x - self.left_limit
+
+            if self.camera_x < 0:
+                self.camera_x = 0
+
+            if self.player.y < self.fall_limit:
+                self.lose_life()
+
+            if self.lives <= 0:
+                print("GAME OVER")
+                #self.lives += 3
+                self.state = 0
+                #chamada da tela de game over
+                self.reset_player_position()
+                self.lives = 3  #Reseta as vidas para o próximo round
+
+        elif self.state == 0:  # NO MENU
+            #Lógica para detectar clique do mouse
+            if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:
+                x_pos, y_pos = glfw.get_cursor_pos(window)
+                #Inverter o Y (GLFW topo=0, OpenGL base=0)
+                y_pos = self.height - y_pos
+                self.check_menu_clicks(x_pos, y_pos, window)
 
     def draw_quad(self, x, y, w, h):
         glBegin(GL_QUADS)
@@ -157,6 +182,19 @@ class Game:
         for p in self.platforms:
             self.draw_quad(p.x - self.camera_x, p.y, p.w, p.h)
 
+    def check_menu_clicks(self, x, y, window):
+        x_min = self.width / 2 - 150
+        x_max = self.width / 2 + 150
+
+        #Botão INICIAR
+        if (x_min < x < x_max and 150 < y < 230):
+            self.reset_game()
+            self.state = 1
+
+        #Botão SAIR
+        if (x_min < x < x_max and 70 < y < 150):
+            glfw.set_window_should_close(window, True)
+
     def draw_lives(self):
         glColor3f(1, 1, 1)
         glBindTexture(GL_TEXTURE_2D, self.life_texture)
@@ -172,16 +210,37 @@ class Game:
             y = start_y
             self.draw_quad(x, y, icon_w, icon_h)
 
+    def draw_menu(self):
+        #Desenha o Fundo
+        glColor3f(1, 1, 1)
+        glBindTexture(GL_TEXTURE_2D, self.menu_bg)
+        self.draw_quad(0, 0, self.width, self.height)
+
+        #Desenha o Letreiro
+        glBindTexture(GL_TEXTURE_2D, self.title_tex)
+        self.draw_quad(102, 230, 595, 328)
+
+        #Desenha o Botão de Iniciar (Deslocamento mínimo de 35)
+        glBindTexture(GL_TEXTURE_2D, self.btn_start_tex)
+        self.draw_quad(0, -115, self.width, self.height)
+
+        #Desenha o Botão de Sair (Deslocamento mínimo de -35)
+        glBindTexture(GL_TEXTURE_2D, self.btn_exit_tex)
+        self.draw_quad(0, -185, self.width, self.height)
+
     def draw(self):
         glLoadIdentity()
+        glClear(GL_COLOR_BUFFER_BIT)  #Garante que a tela seja limpa
 
-        self.draw_background()
-        self.draw_ground()
-        self.draw_platforms()
-        for enemy in self.enemies:
-            enemy.draw(self.camera_x)
-
-        glColor3f(1, 1, 1)
-        self.player.draw(self.camera_x)
-
-        self.draw_lives()
+        if self.state == 1:
+            #Desenha o jogo
+            self.draw_background()
+            self.draw_ground()
+            self.draw_platforms()
+            for enemy in self.enemies:
+                enemy.draw(self.camera_x)
+            self.player.draw(self.camera_x)
+            self.draw_lives()
+        else:
+            #Desenha apenas o menu
+            self.draw_menu()
