@@ -28,14 +28,14 @@ class Player:
 
         # animação
         self.frames = [
-            load_texture("assets/passo 1.png"),
-            load_texture("assets/passo 2.png"),
-            load_texture("assets/passo 3.png"),
-            load_texture("assets/passo 4.png"),
-            load_texture("assets/passo 5.png"),
-            load_texture("assets/passo 6.png"),
-            load_texture("assets/passo 7.png"),
-            load_texture("assets/passo 8.png")
+            load_texture("assets/mickey/passo 1.png"),
+            load_texture("assets/mickey/passo 2.png"),
+            load_texture("assets/mickey/passo 3.png"),
+            load_texture("assets/mickey/passo 4.png"),
+            load_texture("assets/mickey/passo 5.png"),
+            load_texture("assets/mickey/passo 6.png"),
+            load_texture("assets/mickey/passo 7.png"),
+            load_texture("assets/mickey/passo 8.png")
         ]
 
         self.frame_index = 0

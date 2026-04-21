@@ -7,7 +7,7 @@ from player import Player
 from texture import load_texture
 from audio import AudioMusica, AudioHit
 from enemy import Enemy
-
+import numpy as np
 
 class Game:
     def __init__(self, width, height):
@@ -63,6 +63,8 @@ class Game:
 
         self.fall_limit = -150
 
+        self.menu_timer = 0
+
     def reset_player_position(self):
         self.player.x = self.spawn_x
         self.player.y = self.spawn_y
@@ -81,6 +83,7 @@ class Game:
         self.reset_player_position()
         for enemy in self.enemies:
             enemy.ativo = True
+            enemy.current_texture = enemy.frames[0]
 
     def update(self, window, dt):
         if self.state == 1:  #JOGANDO
@@ -97,24 +100,9 @@ class Game:
             for platform in self.platforms:
                 platform.check_collision(self.player)
 
-            #Update e Colisão dos inimigos
             for enemy in self.enemies:
                 enemy.update(dt)
-
-                if enemy.ativo:
-
-                    if (self.player.x < enemy.x + enemy.w and
-                            self.player.x + self.player.w > enemy.x and
-                            self.player.y < enemy.y + enemy.h and
-                            self.player.y + self.player.h > enemy.y):
-
-                        #onde ve se foi por cima
-                        if self.player.vel_y < 0 and self.player.y > enemy.y + (enemy.h * 0.5):
-                            enemy.ativo = False  # Mata o inimigo
-                            self.player.vel_y = self.player.jump_force * 0.8 #achei que ficou legal subir
-                            # o player dps de acertar o bicho, qualquer coisa da pra tirar
-                        else:
-                            self.lose_life()
+                enemy.check_collision_with_player(self.player, self)
 
             screen_x = self.player.x - self.camera_x
 
@@ -139,6 +127,7 @@ class Game:
                 self.lives = 3  #Reseta as vidas para o próximo round
 
         elif self.state == 0:  # NO MENU
+            self.menu_timer += dt
             #Lógica para detectar clique do mouse
             if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:
                 x_pos, y_pos = glfw.get_cursor_pos(window)
@@ -216,15 +205,18 @@ class Game:
         glBindTexture(GL_TEXTURE_2D, self.menu_bg)
         self.draw_quad(0, 0, self.width, self.height)
 
-        #Desenha o Letreiro
-        glBindTexture(GL_TEXTURE_2D, self.title_tex)
-        self.draw_quad(102, 230, 595, 328)
+        #EFEITO PARALAXE COM NUMPY: np.sin e np.cos fazem o letreiro flutuar
+        movimento_y = np.sin(self.menu_timer * 2.0) * 15
+        movimento_x = np.cos(self.menu_timer * 1.0) * 5
 
-        #Desenha o Botão de Iniciar (Deslocamento mínimo de 35)
+        #Desenha o Letreiro com o movimento
+        glBindTexture(GL_TEXTURE_2D, self.title_tex)
+        self.draw_quad(102 + movimento_x, 230 + movimento_y, 595, 328)
+
+        #Desenha os Botões (fixos para facilitar o clique)
         glBindTexture(GL_TEXTURE_2D, self.btn_start_tex)
         self.draw_quad(0, -115, self.width, self.height)
 
-        #Desenha o Botão de Sair (Deslocamento mínimo de -35)
         glBindTexture(GL_TEXTURE_2D, self.btn_exit_tex)
         self.draw_quad(0, -185, self.width, self.height)
 
