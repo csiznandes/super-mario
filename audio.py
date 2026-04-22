@@ -1,64 +1,64 @@
-import winsound
+import os
+import pygame
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-### Classes de Audio do game para eventos ###
+class AudioManager:
+    iniciado = False
 
+    @classmethod
+    def iniciar(cls):
+        if not cls.iniciado:
+            pygame.mixer.init()
+            cls.iniciado = True
 
-###################################
-# falta classe para audio do game musica??#
 
 class AudioPulo:
-
-
     def __init__(self):
-        self.caminho = "assets/audio_pulo.wav"
-
+        AudioManager.iniciar()
+        caminho = os.path.join(BASE_DIR, "assets", "audio", "audio_pulo.WAV")
+        self.som = pygame.mixer.Sound(caminho)
 
     def tocar(self):
-        winsound.PlaySound(
-        self.caminho,
-        winsound.SND_FILENAME | winsound.SND_ASYNC
-        )
+        self.som.play()
+
+
+class AudioHitEnemy:
+    def __init__(self):
+        AudioManager.iniciar()
+        caminho = os.path.join(BASE_DIR, "assets", "audio", "audio_hit_anemy.WAV")
+        self.som = pygame.mixer.Sound(caminho)
+
+    def tocar(self):
+        self.som.play()
+
+
+class AudioHitMickey:
+    def __init__(self):
+        AudioManager.iniciar()
+        caminho = os.path.join(BASE_DIR, "assets", "audio", "audio_hit_mickey.WAV")
+        self.som = pygame.mixer.Sound(caminho)
+
+    def tocar(self):
+        self.som.play()
 
 
 class AudioMusica:
-
-
     def __init__(self):
-        self.caminho = "assets/mickeyfundo.wav"
-
+        AudioManager.iniciar()
+        self.caminho = os.path.join(BASE_DIR, "assets", "audio", "mickeyfundo.wav")
 
     def tocar(self):
-        winsound.PlaySound(
-        self.caminho,
-        winsound.SND_FILENAME | winsound.SND_ASYNC | winsound.SND_LOOP
-        )
+        pygame.mixer.music.load(self.caminho)
+        pygame.mixer.music.set_volume(0.4)
+        pygame.mixer.music.play(-1)
 
+    def parar(self):
+        pygame.mixer.music.stop()
 
-class AudioHit:
+    def pausar(self):
+        pygame.mixer.music.pause()
 
-
-    def __init__(self):
-        self.caminho = "assets/audio_hit.wav"
-
-
-    def tocar(self):
-        winsound.PlaySound(
-            self.caminho,
-            winsound.SND_FILENAME | winsound.SND_ASYNC
-        )
-
-
-
-class AudioGamerover:
-
-
-    def __init__(self):
-        self.caminho = "assets/audio_gamerover.wav"
-
-
-    def tocar(self):
-        winsound.PlaySound(
-        self.caminho,
-        winsound.SND_FILENAME | winsound.SND_ASYNC
-        )
+    def continuar_(self):
+        pygame.mixer.music.unpause()

@@ -5,9 +5,11 @@ from game_platform import Platform
 from ground import criarsolo
 from player import Player
 from texture import load_texture
-from audio import AudioMusica, AudioHit
+from audio import AudioMusica, AudioHitMickey
 from enemy import Enemy
 import numpy as np
+from score import Score
+from coin import Coin
 
 class Game:
     def __init__(self, width, height):
@@ -22,10 +24,20 @@ class Game:
         self.btn_exit_tex = load_texture("assets/exit_button.png")
 
         self.player = Player()
+        self.score_system = Score(self.width, self.height)
+
+        self.coins = [
+            Coin(250, 140),
+            Coin(450, 340),
+            Coin(650, 440),
+            Coin(950, 290),
+        ]
+
 
         self.musica_fundo = AudioMusica()
         self.musica_fundo.tocar()
-        self.som_hit = AudioHit()
+
+        self.som_hit = AudioHitMickey()
 
         self.max_lives = 3
         self.lives = 3
@@ -73,14 +85,16 @@ class Game:
         self.camera_x = 0
 
     def lose_life(self):
-        self.som_hit = AudioHit()
         if self.lives > 0:
             self.lives -= 1
+            self.som_hit.tocar()
         self.reset_player_position()
+        self.som_hit.tocar()
 
     def reset_game(self):
         self.lives = 3
         self.reset_player_position()
+        self.score_system.reset()
         for enemy in self.enemies:
             enemy.ativo = True
             enemy.current_texture = enemy.frames[0]
@@ -95,6 +109,15 @@ class Game:
             #colisão com solo
             for ground in self.ground_segments:
                 ground.check_collision(self.player)
+
+            #Colisão com as moeda
+            for coin in self.coins:
+                coin.update(dt)
+                value = coin.check_collision_with_player(self.player)
+                self.score_system.add(value)
+
+            glfw.set_window_title(window, f"Mickey Bros - Score: {self.score_system.score}  Vidas: {self.lives}")
+
 
             #colisão com plataformas
             for platform in self.platforms:
@@ -117,6 +140,7 @@ class Game:
 
             if self.player.y < self.fall_limit:
                 self.lose_life()
+                self.som_hit.tocar()
 
             if self.lives <= 0:
                 print("GAME OVER")
@@ -229,6 +253,9 @@ class Game:
             self.draw_background()
             self.draw_ground()
             self.draw_platforms()
+            self.score_system.draw()
+
+
             for enemy in self.enemies:
                 enemy.draw(self.camera_x)
             self.player.draw(self.camera_x)

@@ -1,6 +1,6 @@
 from OpenGL.GL import *
 from texture import load_texture
-
+from audio import AudioHitEnemy
 
 class Enemy:
     def __init__(self, platform):
@@ -20,6 +20,7 @@ class Enemy:
 
         self.dead_timer = 0
         self.remove = False
+        self.son_hit = AudioHitEnemy()
 
         self.frames = [
             load_texture("assets/enemy/passo1.png"),
@@ -41,10 +42,10 @@ class Enemy:
         if not self.ativo:
             self.current_texture = self.hit_texture
             self.dead_timer += dt
+            self.son_hit.tocar()
 
             if self.dead_timer >= 0.3:
                 self.remove = True
-
             return
 
         self.x += self.speed * self.direction * dt

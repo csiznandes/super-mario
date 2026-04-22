@@ -2,7 +2,6 @@ import glfw
 from OpenGL.GL import *
 from texture import load_texture
 from audio import AudioPulo
-
 class Player:
 
     def __init__(self):
