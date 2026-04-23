@@ -246,20 +246,21 @@ class Game:
 
     def draw(self):
         glLoadIdentity()
-        glClear(GL_COLOR_BUFFER_BIT)  #Garante que a tela seja limpa
+        glClear(GL_COLOR_BUFFER_BIT)
 
         if self.state == 1:
-            #Desenha o jogo
             self.draw_background()
             self.draw_ground()
             self.draw_platforms()
-            self.score_system.draw()
 
+            for coin in self.coins:
+                coin.draw(self.camera_x)
 
             for enemy in self.enemies:
                 enemy.draw(self.camera_x)
+
             self.player.draw(self.camera_x)
             self.draw_lives()
+            self.score_system.draw()
         else:
-            #Desenha apenas o menu
             self.draw_menu()
