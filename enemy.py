@@ -42,7 +42,6 @@ class Enemy:
         if not self.ativo:
             self.current_texture = self.hit_texture
             self.dead_timer += dt
-            self.son_hit.tocar()
 
             if self.dead_timer >= 0.3:
                 self.remove = True
@@ -95,6 +94,7 @@ class Enemy:
         self.ativo = False
         self.current_texture = self.hit_texture
         self.dead_timer = 0
+        self.son_hit.tocar()
 
     def draw(self, camera_x):
         if self.remove:
