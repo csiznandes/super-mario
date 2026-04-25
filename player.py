@@ -22,10 +22,10 @@ class Player:
         self.facing_right = True
         self.on_ground = False
 
-        # som
+        #Som
         self.som_pulo = AudioPulo()
 
-        # animação
+        #Animação
         self.frames = [
             load_texture("assets/mickey/passo 1.png"),
             load_texture("assets/mickey/passo 2.png"),

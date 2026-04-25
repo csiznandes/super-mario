@@ -7,7 +7,7 @@ class Goal:
         self.y = y
         self.w = 64
         self.h = 128
-        self.texture = load_texture("assets/miney.png") # Crie ou use uma imagem de bandeira
+        self.texture = load_texture("assets/miney.png")
 
     def check_collision(self, player):
         return (player.x < self.x + self.w and

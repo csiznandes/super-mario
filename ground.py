@@ -11,5 +11,6 @@ def criarsolo():
         Platform(2400, y, 300, h),
         Platform(3000, y, 500, h),
         Platform(3800, y, 400, h),
-        Platform(4500, y, 600, h), # Solo final da vitória
+        Platform(4500, y, 600, h), #Solo final da vitória
+        Platform(3600, y,74,h)    #Solo do inigo
     ]
