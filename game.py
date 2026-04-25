@@ -10,6 +10,7 @@ from enemy import Enemy
 import numpy as np
 from score import Score
 from coin import Coin
+from goal import Goal
 
 class Game:
     def __init__(self, width, height):
@@ -27,10 +28,9 @@ class Game:
         self.score_system = Score(self.width, self.height)
 
         self.coins = [
-            Coin(250, 140),
-            Coin(450, 340),
-            Coin(650, 440),
-            Coin(950, 290),
+            Coin(250, 140), Coin(700, 450), Coin(1350, 400),
+            Coin(1700, 500), Coin(2100, 350), Coin(3400, 450),
+            Coin(4100, 300), Coin(4600, 150)
         ]
 
 
@@ -55,16 +55,33 @@ class Game:
 
         # PLATAFORMAS SUSPENSAS
         self.platforms = [
+            # Início
             Platform(200, 200, 120, 20),
-            Platform(400, 300, 120, 20),
-            Platform(600, 400, 120, 20),
-            Platform(900, 250, 120, 20),
-            Platform(1200, 350, 120, 20),
+            Platform(450, 300, 120, 20),
+            Platform(700, 400, 120, 20),
+            # Seção do meio (Pulos sobre buracos)
+            Platform(1100, 250, 150, 20),
+            Platform(1350, 350, 150, 20),
+            Platform(1700, 450, 200, 20),
+            Platform(2100, 300, 120, 20),
+            # Seção Final (Escada para o céu)
+            Platform(2800, 200, 100, 20),
+            Platform(3100, 300, 100, 20),
+            Platform(3400, 400, 100, 20),
+            Platform(3700, 300, 120, 20),
+            Platform(4100, 250, 200, 20),
         ]
 
         self.enemies = [
             Enemy(self.platforms[1]),
-            Enemy(self.platforms[2])
+            Enemy(self.platforms[3]),
+            Enemy(self.platforms[5]),
+            Enemy(self.platforms[11]),
+            # Para os inimigos do chão, use os segmentos que você criou no criarsolo()
+            # Inimigo no segmento de solo que começa em 1600 e tem largura 600
+            Enemy(Platform(1600, 0, 600, 100)),
+            # Inimigo no segmento de solo que começa em 3000 e tem largura 500
+            Enemy(Platform(3000, 0, 500, 100)),
         ]
 
         self.spawn_x = 100
@@ -76,6 +93,8 @@ class Game:
         self.fall_limit = -150
 
         self.menu_timer = 0
+
+        self.finish_line = Goal(4800, 100)
 
     def reset_player_position(self):
         self.player.x = self.spawn_x
@@ -150,6 +169,11 @@ class Game:
                 self.reset_player_position()
                 self.lives = 3  #Reseta as vidas para o próximo round
 
+            if self.finish_line.check_collision(self.player):
+                print("VITÓRIA! VOCÊ CHEGOU AO FIM!")
+                self.state = 0  # Volta para o menu (ou crie um estado de Win)
+                self.reset_game()
+
         elif self.state == 0:  # NO MENU
             self.menu_timer += dt
             #Lógica para detectar clique do mouse
@@ -179,7 +203,7 @@ class Game:
     def draw_background(self):
         glColor3f(1, 1, 1)
         glBindTexture(GL_TEXTURE_2D, self.background_texture)
-        self.draw_quad(-self.camera_x * 0.3, 0, self.width * 3, self.height)
+        self.draw_quad(-self.camera_x * 0.3, 0, self.width * 10, self.height)
 
     def draw_ground(self):
         glColor3f(1, 1, 1)
@@ -252,6 +276,8 @@ class Game:
             self.draw_background()
             self.draw_ground()
             self.draw_platforms()
+
+            self.finish_line.draw(self.camera_x) #Desenha a bandeira
 
             for coin in self.coins:
                 coin.draw(self.camera_x)
