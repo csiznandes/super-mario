@@ -50,21 +50,20 @@ class Game:
         self.background_texture = load_texture("assets/background_mickey.png")
         self.platform_texture = load_texture("assets/plataforma.png")
         self.solo_texture = load_texture("assets/gramado.png")
-        # SOLO COM BURACOS
+        #SOLO COM BURACOS
         self.ground_segments = criarsolo()
-
-        # PLATAFORMAS SUSPENSAS
+        #PLATAFORMAS SUSPENSAS
         self.platforms = [
-            # Início
+            #Início
             Platform(200, 200, 120, 20),
             Platform(450, 300, 120, 20),
             Platform(700, 400, 120, 20),
-            # Seção do meio (Pulos sobre buracos)
+            #Seção do meio (Pulos sobre buracos)
             Platform(1100, 250, 150, 20),
             Platform(1350, 350, 150, 20),
             Platform(1700, 450, 200, 20),
             Platform(2100, 300, 120, 20),
-            # Seção Final (Escada para o céu)
+            #Seção Final (Escada para o céu)
             Platform(2800, 200, 100, 20),
             Platform(3100, 300, 100, 20),
             Platform(3400, 400, 100, 20),
@@ -77,10 +76,8 @@ class Game:
             Enemy(self.platforms[3]),
             Enemy(self.platforms[5]),
             Enemy(self.platforms[11]),
-            # Para os inimigos do chão, use os segmentos que você criou no criarsolo()
-            # Inimigo no segmento de solo que começa em 1600 e tem largura 600
+            #Para os inimigos do chão, está sendo usado os segmentos que foi criado no criarsolo()
             Enemy(Platform(1600, 0, 600, 100)),
-            # Inimigo no segmento de solo que começa em 3000 e tem largura 500
             Enemy(Platform(3000, 0, 500, 100)),
         ]
 
@@ -125,7 +122,7 @@ class Game:
 
             self.player.on_ground = False
 
-            #colisão com solo
+            #Colisão com solo
             for ground in self.ground_segments:
                 ground.check_collision(self.player)
 
@@ -138,7 +135,7 @@ class Game:
             glfw.set_window_title(window, f"Mickey Bros - Score: {self.score_system.score}  Vidas: {self.lives}")
 
 
-            #colisão com plataformas
+            #Colisão com plataformas
             for platform in self.platforms:
                 platform.check_collision(self.player)
 
@@ -165,7 +162,7 @@ class Game:
                 print("GAME OVER")
                 #self.lives += 3
                 self.state = 0
-                #chamada da tela de game over
+                #Chamada da tela de game over
                 self.reset_player_position()
                 self.lives = 3  #Reseta as vidas para o próximo round
 
