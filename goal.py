@@ -5,7 +5,7 @@ class Goal:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.w = 64
+        self.w = 90
         self.h = 128
         self.texture = load_texture("assets/miney.png")
 
