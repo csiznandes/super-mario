@@ -1,7 +1,6 @@
-# pipe_enemy.py
 from OpenGL.GL import *
 from texture import load_texture
-
+from audio import AudioHitBafo
 
 class Enemy2:
     def __init__(self, x, y):
@@ -15,6 +14,7 @@ class Enemy2:
         self.w = 58
         self.h = 58
         self.x = self.pipe_x + (self.pipe_w / 2) - (self.w / 2)
+        self.som_hit = AudioHitBafo()
 
         self.hidden_y = self.pipe_y + 20
         self.out_y = self.pipe_y + self.pipe_h - 10
@@ -79,6 +79,8 @@ class Enemy2:
 
         if colidiu:
             game.lose_life()
+            self.som_hit.tocar()
+
 
     def check_collision_with_player(self, player, game):
         self.check_pipe_collision(player)

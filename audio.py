@@ -33,6 +33,15 @@ class AudioHitEnemy:
     def tocar(self):
         self.som.play()
 
+class AudioHitBafo:
+    def __init__(self):
+        AudioManager.iniciar()
+        caminho = os.path.join(BASE_DIR, "assets", "audio", "audio_hit_bafo.wav")
+        self.som = pygame.mixer.Sound(caminho)
+
+    def tocar(self):
+        self.som.play()
+
 
 class AudioHitMickey:
     def __init__(self):
