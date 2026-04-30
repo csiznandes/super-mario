@@ -1,5 +1,5 @@
+import glfw
 from OpenGL.GL import *
-
 from enemy import Enemy
 from texture import load_texture
 from game_platform import Platform
@@ -15,6 +15,8 @@ class Level1:
         self.background_texture = load_texture("assets/background_mickey.png")
         self.platform_texture = load_texture("assets/plataforma.png")
         self.solo_texture = load_texture("assets/gramado.png")
+        self.btn_restart_tex = load_texture("assets/restart_button.png")
+        self.btn_exit_tex = load_texture("assets/exit_button.png")
 
         # Player
         self.player = Player()
@@ -86,6 +88,19 @@ class Level1:
         self.player.on_ground = False
         self.camera_x = 0
 
+    def check_level_buttons(self, x, y, window, game):
+        # RESTART
+        if 450 < x < 580 and 540 < y < 600:
+            game.reset_game()
+            game.state = 1
+            return
+
+        # EXIT
+        if 570 < x < 690 and 550 < y < 600:
+            glfw.set_window_should_close(window, True)
+            return
+
+
     def update(self, window, dt, game):
         self.player.update(window, dt)
 
@@ -132,6 +147,11 @@ class Level1:
             game.state = 0
             game.reset_game()
 
+        # Checagem dos botões
+        if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:
+            x_pos, y_pos = glfw.get_cursor_pos(window)
+            y_pos = 600 - y_pos
+            self.check_level_buttons(x_pos, y_pos, window, game)
 
 
     def draw_quad(self, x, y, w, h):
@@ -180,6 +200,17 @@ class Level1:
                 platform.h
             )
 
+    def draw_buttons(self):
+        glColor3f(1, 1, 1)
+
+        # RESTART no topo
+        glBindTexture(GL_TEXTURE_2D, self.btn_restart_tex)
+        self.draw_quad(450, 540, 130, 60)
+
+        # EXIT no topo
+        glBindTexture(GL_TEXTURE_2D, self.btn_exit_tex)
+        self.draw_quad(570, 550, 120, 50)
+
     def draw(self):
         self.draw_background()
         self.draw_ground()
@@ -197,3 +228,4 @@ class Level1:
             pipe_enemy.draw(self.camera_x)
 
         self.player.draw(self.camera_x)
+        self.draw_buttons()

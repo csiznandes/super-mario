@@ -102,14 +102,15 @@ class Game:
         glEnd()
 
     def check_menu_clicks(self, x, y, window):
-        x_min = self.width / 2 - 150
-        x_max = self.width / 2 + 150
+        x_min = 310
+        x_max = 480
+
 
         if x_min < x < x_max and 150 < y < 230:
             self.reset_game()
             self.state = 1
 
-        if x_min < x < x_max and 70 < y < 150:
+        if x_min < x < x_max and 0 < y < 150:
             glfw.set_window_should_close(window, True)
 
     def draw_lives(self):
@@ -138,11 +139,11 @@ class Game:
         glBindTexture(GL_TEXTURE_2D, self.title_tex)
         self.draw_quad(102 + movimento_x, 230 + movimento_y, 595, 328)
 
-        glBindTexture(GL_TEXTURE_2D, self.btn_start_tex)
-        self.draw_quad(0, -115, self.width, self.height)
-
         glBindTexture(GL_TEXTURE_2D, self.btn_exit_tex)
-        self.draw_quad(0, -185, self.width, self.height)
+        self.draw_quad(310, 70, 150, 70)
+
+        glBindTexture(GL_TEXTURE_2D, self.btn_start_tex)
+        self.draw_quad(310, 150, 150, 70)
 
     def draw(self):
         glLoadIdentity()
