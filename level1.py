@@ -41,12 +41,12 @@ class Level1:
             Platform(1100, 250, 150, 20),
             Platform(1350, 350, 150, 20),
             Platform(1700, 450, 200, 20),
-            Platform(2100, 300, 120, 20),
+            Platform(2100, 400, 120, 20),
 
             Platform(2800, 200, 100, 20),
             Platform(3100, 300, 100, 20),
             Platform(3400, 400, 100, 20),
-            Platform(3700, 300, 120, 20),
+            Platform(3700, 350, 120, 20),
             Platform(4100, 250, 200, 20),
         ]
 
@@ -72,7 +72,7 @@ class Level1:
             Coin(700, 450),
             Coin(1350, 400),
             Coin(1700, 500),
-            Coin(2100, 350),
+            Coin(2100, 450),
             Coin(3400, 450),
             Coin(4100, 300),
             Coin(4600, 150),
@@ -147,9 +147,7 @@ class Level1:
 
         # Chegada/final
         if self.finish_line.check_collision(self.player):
-            print("VITÓRIA! VOCÊ CHEGOU AO FIM!")
-            game.state = 0
-            game.reset_game()
+            game.state = 2  # tela de vitória
 
         # Checagem dos botões
         if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:

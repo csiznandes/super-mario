@@ -13,13 +13,16 @@ class Game:
         self.width = width
         self.height = height
 
-        self.state = 0  # 0 = menu, 1 = jogando
+        self.state = 0  # 0 = menu, 1 = jogando, 2 = vitória
 
         # Menu
         self.menu_bg = load_texture("assets/background_mickey.png")
         self.title_tex = load_texture("assets/mickey_bros.png")
         self.btn_start_tex = load_texture("assets/start_button.png")
         self.btn_exit_tex = load_texture("assets/exit_button.png")
+        self.btn_restart_tex = load_texture("assets/restart_button.png")
+        self.win_bg = load_texture("assets/win_bg.png")
+        self.btn_menu_tex = load_texture("assets/win_bg.png")  # cria essa imagem
 
         # Fase
         self.level = Level1()
@@ -84,6 +87,12 @@ class Game:
                 y_pos = self.height - y_pos
                 self.check_menu_clicks(x_pos, y_pos, window)
 
+        elif self.state == 2:
+            if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:
+                x_pos, y_pos = glfw.get_cursor_pos(window)
+                y_pos = self.height - y_pos
+                self.check_win_clicks(x_pos, y_pos, window)
+
     def draw_quad(self, x, y, w, h):
         glBegin(GL_QUADS)
 
@@ -105,13 +114,44 @@ class Game:
         x_min = 310
         x_max = 480
 
-
         if x_min < x < x_max and 150 < y < 230:
             self.reset_game()
             self.state = 1
 
         if x_min < x < x_max and 0 < y < 150:
             glfw.set_window_should_close(window, True)
+
+    def check_win_clicks(self, x, y, window):
+        # RESTART
+        if 300 < x < 500 and 300 < y < 370:
+            self.reset_game()
+            self.state = 1
+
+        # MENU
+        elif 300 < x < 500 and 200 < y < 270:
+            self.state = 0
+
+        # EXIT
+        elif 300 < x < 500 and 100 < y < 170:
+            glfw.set_window_should_close(window, True)
+
+    def draw_win_screen(self):
+        glColor3f(1, 1, 1)
+
+        glBindTexture(GL_TEXTURE_2D, self.menu_bg)
+        self.draw_quad(0, 0, self.width, self.height)
+        #YOU WIN
+        glBindTexture(GL_TEXTURE_2D, self.win_bg)
+        self.draw_quad(300, 400, 200, 200)
+        #botões
+        glBindTexture(GL_TEXTURE_2D, self.btn_restart_tex)
+        self.draw_quad(300, 300, 200, 70)
+
+        # glBindTexture(GL_TEXTURE_2D, self.btn_menu_tex)
+        # self.draw_quad(300, 200, 200, 70)
+
+        glBindTexture(GL_TEXTURE_2D, self.btn_exit_tex)
+        self.draw_quad(300, 200, 200, 70)
 
     def draw_lives(self):
         glColor3f(1, 1, 1)
@@ -153,5 +193,9 @@ class Game:
             self.level.draw()
             self.draw_lives()
             self.score_system.draw()
-        else:
+
+        elif self.state == 0:
             self.draw_menu()
+
+        elif self.state == 2:
+            self.draw_win_screen()
