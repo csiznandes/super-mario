@@ -13,10 +13,11 @@ class Player:
         self.h = 64
 
         self.vel_y = 0
+        self.prev_y = self.y
 
         self.speed = 300
         self.gravity = 900
-        self.jump_force = 450
+        self.jump_force = 480
 
 
         self.facing_right = True
@@ -45,6 +46,7 @@ class Player:
         self.current_texture = self.frames[0]
 
     def update(self, window, dt):
+        self.prev_y = self.y
 
         moving = False
 
@@ -63,9 +65,7 @@ class Player:
             self.vel_y = self.jump_force
             self.on_ground = False
 
-
         self.vel_y -= self.gravity * dt
-        self.y += self.vel_y * dt
 
         if moving:
             self.frame_time += dt

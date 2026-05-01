@@ -102,15 +102,19 @@ class Level1:
 
 
     def update(self, window, dt, game):
+        # 1. Atualiza input (movimento horizontal)
         self.player.update(window, dt)
 
+        # 2. Aplica gravidade no Y
+        self.player.y += self.player.vel_y * dt
+
+        # 3. Reseta chão
         self.player.on_ground = False
 
-        # Colisão com chão
+        # 4. Checa colisões
         for ground in self.ground_segments:
             ground.check_collision(self.player)
 
-        # Colisão com plataformas
         for platform in self.platforms:
             platform.check_collision(self.player)
 
