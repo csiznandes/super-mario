@@ -75,7 +75,7 @@ class Game:
     def next_level(self):
         self.current_level_num += 1
 
-        if self.current_level_num <= 5:
+        if self.current_level_num <= 1:
             self.level = LevelRandom(dificuldade=self.current_level_num)
             self.level.start()
             print(f"\nCHECKPOINT ALCANÇADO")
