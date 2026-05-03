@@ -1,0 +1,42 @@
+##Mickey Bros (Python + OpenGL)
+
+##Integrantes
+Cléo Jr. F. L. Siznandes, Gustavo K. Mohr, Henrique da Silva Fagundes, Luan C. Guasso e Lucas de Jesus Fassbinder
+
+##Descrição
+Este projeto consiste em um jogo 2D desenvolvido em Python utilizando OpenGL e GLFW.
+
+O jogador controla o personagem (Mickey), podendo se movimentar, pular, coletar moedas e enfrentar inimigos.
+
+##Objetivo
+Chegar até o final da fase sem perder todas as vidas.
+
+##Mecânicas do jogo
+- Sistema de movimentação (A/D + Espaço)
+- Gravidade e pulo
+- Sistema de colisão AABB
+- Coleta de moedas (pontuação)
+- Inimigos com comportamento automático
+- Sistema de vidas
+- Loja para compra de vidas
+- Geração procedural de fases
+
+##Tecnologias utilizadas
+- Python
+- OpenGL
+- GLFW
+- Pillow
+- Pygame (áudio)
+
+##Estados do jogo
+- Menu inicial
+- Jogando
+- Vitória
+- Loja
+
+##Observações
+O projeto utiliza conceitos de computação gráfica como:
+- Vértices
+- Texturas
+- Mapeamento UV
+- Primitivas (GL_QUADS)

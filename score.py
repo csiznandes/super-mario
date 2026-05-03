@@ -1,7 +1,6 @@
 from OpenGL.GL import *
 from texture import load_texture
 
-
 class Score:
     def __init__(self, width, height):
         self.score = 0

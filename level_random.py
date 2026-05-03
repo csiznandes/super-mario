@@ -8,7 +8,6 @@ from coin import Coin
 from goal import Goal
 from enemy2 import Enemy2
 
-
 class LevelRandom:
     def __init__(self, dificuldade=1):
         self.dificuldade = dificuldade
