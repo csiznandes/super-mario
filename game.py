@@ -82,7 +82,7 @@ class Game:
             print(f"CARREGANDO FASE {self.current_level_num}...")
         else:
             self.state = 2
-    #Lógica principal
+    #Lógica principal do jogo
     def update(self, window, dt):
         if self.state == 1: #Se está jogando, atualiza fase, verifica queda e morte
             self.level.update(window, dt, self)
