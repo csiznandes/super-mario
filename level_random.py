@@ -172,8 +172,11 @@ class LevelRandom:
         for e2 in self.enemies2: e2.draw(self.camera_x)
 
         self.player.draw(self.camera_x)
-
+    #Desenha um quadrado e cola uma textura nele
     def draw_quad(self, x, y, w, h):
+        #glTexCoord2f: parte da imagem, define qual parte da textura será usada em cada vértice do objeto
+        #glVertex2f: posição na tela
+        #Isso serve porque o OpenGL precisa saber como mapear a imagem no objeto.
         glBegin(GL_QUADS)
         glTexCoord2f(0, 0);
         glVertex2f(x, y)

@@ -83,12 +83,13 @@ class Player:
             self.current_texture = self.frames[0]
 
     def draw(self, camera_x):
+        #Ativa a textura
         glBindTexture(GL_TEXTURE_2D, self.current_texture)
-
+        #Aplica a câmera
         screen_x = self.x - camera_x
 
         glBegin(GL_QUADS)
-
+        #Se o personagem está virado pra direita
         if self.facing_right:
             glTexCoord2f(0, 0)
             glVertex2f(screen_x, self.y)
