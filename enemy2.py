@@ -4,13 +4,13 @@ from audio import AudioHitBafo
 
 class Enemy2:
     def __init__(self, x, y):
-        # Cano
+        #Cano
         self.pipe_x = x
         self.pipe_y = y
         self.pipe_w = 74
         self.pipe_h = 90
 
-        # Inimigo
+        #Inimigo
         self.w = 58
         self.h = 58
         self.x = self.pipe_x + (self.pipe_w / 2) - (self.w / 2)
@@ -48,7 +48,7 @@ class Enemy2:
             self.wait_timer = 0
 
     def check_pipe_collision(self, player):
-        # Colisão sólida com o CANO
+        #Colisão sólida com o CANO
         colidiu = (
             player.x < self.pipe_x + self.pipe_w and
             player.x + player.w > self.pipe_x and
@@ -59,14 +59,14 @@ class Enemy2:
         if not colidiu:
             return
 
-        # Player caindo em cima do cano
+        #Player caindo em cima do cano
         if player.vel_y < 0 and player.y >= self.pipe_y + self.pipe_h - 10:
             player.y = self.pipe_y + self.pipe_h
             player.vel_y = 0
             player.on_ground = True
 
     def check_enemy_collision(self, player, game):
-        # Só dá dano se o inimigo estiver saindo do cano
+        #Só dá dano se o inimigo estiver saindo do cano
         if self.y <= self.hidden_y + 10:
             return
 
@@ -109,7 +109,7 @@ class Enemy2:
         screen_pipe_x = self.pipe_x - camera_x
         screen_enemy_x = self.x - camera_x
 
-        # Desenha inimigo primeiro, para parecer que sai de dentro do cano
+        #Desenha inimigo primeiro, para parecer que sai de dentro do cano
         self.draw_quad(
             screen_enemy_x,
             self.y,
@@ -118,7 +118,7 @@ class Enemy2:
             self.enemy_texture
         )
 
-        # Desenha o cano por cima
+        #Desenha o cano por cima
         self.draw_quad(
             screen_pipe_x,
             self.pipe_y,

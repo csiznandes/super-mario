@@ -8,7 +8,7 @@ class Score:
         self.width = width
         self.height = height
 
-        # carregar números
+        #carregar números
         self.number_textures = {
             "0": load_texture("assets/numbers/number0.png"),
             "1": load_texture("assets/numbers/number1.png"),

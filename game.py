@@ -5,8 +5,6 @@ from texture import load_texture
 from audio import AudioMusica, AudioHitMickey
 import numpy as np
 from score import Score
-from level1 import Level1
-from level2 import Level2
 from level_random import LevelRandom
 
 class Game:
@@ -14,31 +12,31 @@ class Game:
         self.width = width
         self.height = height
 
-        self.state = 0  # 0 = menu, 1 = jogando, 2 = vitória
+        self.state = 0  #0 = menu, 1 = jogando, 2 = vitória
 
-        # Menu
+        #Imagens
         self.menu_bg = load_texture("assets/background_mickey.png")
         self.title_tex = load_texture("assets/mickey_bros.png")
         self.btn_start_tex = load_texture("assets/start_button.png")
         self.btn_exit_tex = load_texture("assets/exit_button.png")
         self.btn_restart_tex = load_texture("assets/restart_button.png")
         self.win_bg = load_texture("assets/win_bg.png")
-        self.btn_menu_tex = load_texture("assets/win_bg.png")  # cria essa imagem
+        self.btn_menu_tex = load_texture("assets/win_bg.png")
 
-        # Fase
+        #Fase
         self.current_level_num = 1
         self.level = LevelRandom(dificuldade=1)
 
-        # Score
+        #Score
         self.score_system = Score(self.width, self.height)
 
-        # Áudio
+        #Áudio
         self.musica_fundo = AudioMusica()
         self.musica_fundo.tocar()
 
         self.som_hit = AudioHitMickey()
 
-        # Vidas
+        #Vidas
         self.max_lives = 3
         self.lives = 3
         self.life_texture = load_texture("assets/vida.png")
@@ -63,14 +61,25 @@ class Game:
         self.level = LevelRandom(dificuldade=1)
         self.level.start()
 
+    def processar_compra_vida(self):
+        if self.score_system.score >= 100:
+            self.score_system.score -= 100
+            self.lives += 1
+            self.state = 1
+            self.level.start()
+        else:
+            #Caso ele tente clicar sem ter o valor, manda direto para o menu
+            print("Saldo insuficiente. Retornando ao menu...")
+            self.state = 0
+            self.reset_game()
+
     def next_level(self):
         self.current_level_num += 1
 
         if self.current_level_num <= 3:
             self.level = LevelRandom(dificuldade=self.current_level_num)
             self.level.start()
-            # Isso aparecerá no VS Code / Terminal na hora:
-            print(f"\n--- CHECKPOINT ALCANÇADO ---")
+            print(f"\nCHECKPOINT ALCANÇADO")
             print(f"CARREGANDO FASE {self.current_level_num}...")
         else:
             self.state = 2
@@ -78,7 +87,6 @@ class Game:
     def update(self, window, dt):
         if self.state == 1:
             self.level.update(window, dt, self)
-
             player = self.level.player
 
             glfw.set_window_title(
@@ -90,9 +98,15 @@ class Game:
                 self.lose_life()
 
             if self.lives <= 0:
-                print("GAME OVER")
-                self.state = 0
-                self.reset_game()
+                #Se não tem moedas para comprar vida, volta pro menu direto
+                if self.score_system.score < 100:
+                    print("SEM VIDAS E SEM MOEDAS - GAME OVER")
+                    self.state = 0
+                    self.reset_game()
+                else:
+                    #Se tem moedas, abre a loja
+                    print("ABRINDO LOJA DE VIDAS")
+                    self.state = 3
 
         elif self.state == 0:
             self.menu_timer += dt
@@ -137,16 +151,16 @@ class Game:
             glfw.set_window_should_close(window, True)
 
     def check_win_clicks(self, x, y, window):
-        # RESTART
+        #RESTART
         if 300 < x < 500 and 300 < y < 370:
             self.reset_game()
             self.state = 1
 
-        # MENU
+        #MENU
         elif 300 < x < 500 and 200 < y < 270:
             self.state = 0
 
-        # EXIT
+        #EXIT
         elif 300 < x < 500 and 100 < y < 170:
             glfw.set_window_should_close(window, True)
 
@@ -161,9 +175,6 @@ class Game:
         #botões
         glBindTexture(GL_TEXTURE_2D, self.btn_restart_tex)
         self.draw_quad(300, 300, 200, 70)
-
-        # glBindTexture(GL_TEXTURE_2D, self.btn_menu_tex)
-        # self.draw_quad(300, 200, 200, 70)
 
         glBindTexture(GL_TEXTURE_2D, self.btn_exit_tex)
         self.draw_quad(300, 200, 200, 70)
@@ -208,9 +219,10 @@ class Game:
             self.level.draw()
             self.draw_lives()
             self.score_system.draw()
-
         elif self.state == 0:
             self.draw_menu()
-
         elif self.state == 2:
             self.draw_win_screen()
+        elif self.state == 3:
+            self.level.draw()  #Desenha a fase ao fundo (parada)
+            self.level.draw_shop_screen(self.score_system.score)  #Desenha o menu da loja

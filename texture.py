@@ -1,14 +1,9 @@
 from OpenGL.GL import *
 from PIL import Image
-#import numpy as np
 
 def load_texture(path):
 
-    #image = Image.open(path)
-    #image = image.transpose(Image.FLIP_TOP_BOTTOM)
-
     image = Image.open(path).transpose(Image.FLIP_TOP_BOTTOM).convert("RGBA")
-    #image_data = np.array(image).flatten()
 
     img_data = image.convert("RGBA").tobytes()
 
