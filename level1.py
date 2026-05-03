@@ -147,7 +147,7 @@ class Level1:
 
         # Chegada/final
         if self.finish_line.check_collision(self.player):
-            game.state = 2  # tela de vitória
+            game.next_level()
 
         # Checagem dos botões
         if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:

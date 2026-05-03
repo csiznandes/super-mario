@@ -6,7 +6,8 @@ from audio import AudioMusica, AudioHitMickey
 import numpy as np
 from score import Score
 from level1 import Level1
-
+from level2 import Level2
+from level_random import LevelRandom
 
 class Game:
     def __init__(self, width, height):
@@ -25,7 +26,8 @@ class Game:
         self.btn_menu_tex = load_texture("assets/win_bg.png")  # cria essa imagem
 
         # Fase
-        self.level = Level1()
+        self.current_level_num = 1
+        self.level = LevelRandom(dificuldade=1)
 
         # Score
         self.score_system = Score(self.width, self.height)
@@ -57,8 +59,21 @@ class Game:
     def reset_game(self):
         self.lives = 3
         self.score_system.reset()
-        self.level = Level1()
+        self.current_level_num = 1
+        self.level = LevelRandom(dificuldade=1)
         self.level.start()
+
+    def next_level(self):
+        self.current_level_num += 1
+
+        if self.current_level_num <= 3:
+            self.level = LevelRandom(dificuldade=self.current_level_num)
+            self.level.start()
+            # Isso aparecerá no VS Code / Terminal na hora:
+            print(f"\n--- CHECKPOINT ALCANÇADO ---")
+            print(f"CARREGANDO FASE {self.current_level_num}...")
+        else:
+            self.state = 2
 
     def update(self, window, dt):
         if self.state == 1:
@@ -68,7 +83,7 @@ class Game:
 
             glfw.set_window_title(
                 window,
-                f"Mickey Bros - Score: {self.score_system.score}  Vidas: {self.lives}"
+                f"Mickey Bros | FASE: {self.current_level_num} | Score: {self.score_system.score} | Vidas: {self.lives}"
             )
 
             if player.y < self.fall_limit:
