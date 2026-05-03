@@ -31,8 +31,8 @@ class Game:
         self.score_system = Score(self.width, self.height)
 
         #Áudio
-        self.musica_fundo = AudioMusica()
-        self.musica_fundo.tocar()
+        # self.musica_fundo = AudioMusica()
+        # self.musica_fundo.tocar()
         self.som_hit = AudioHitMickey()
 
         #Vidas
