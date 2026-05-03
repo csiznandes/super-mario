@@ -4,7 +4,6 @@ from enemy import Enemy
 from texture import load_texture
 from game_platform import Platform
 from player import Player
-from ground import criarsolo
 from coin import Coin
 from goal import Goal
 from enemy2 import Enemy2
@@ -19,7 +18,7 @@ class LevelRandom:
         self.btn_restart_tex = load_texture("assets/restart_button.png")
         self.btn_exit_tex = load_texture("assets/exit_button.png")
         self.btn_buy_life_tex = load_texture("assets/buy_life_button.png")
-
+        #Criação de um jogador
         self.player = Player()
         self.spawn_x = 100
         self.spawn_y = 150
@@ -40,7 +39,7 @@ class LevelRandom:
     def gerar_fase_aleatoria(self):
         #Comprimento da fase
         distancia_atual = 400
-        comprimento_total = 5000 + (self.dificuldade * 2000)
+        comprimento_total = 5000 + (self.dificuldade * 2000) #Fase maior, dificuldade maior
         altura_anterior = 0
 
         while distancia_atual < comprimento_total:
@@ -61,25 +60,25 @@ class LevelRandom:
 
             distancia_atual += buraco
 
-            #Criamos a referência da plataforma primeiro
+
             altura_visual = 25 if altura > 0 else 100
-            nova_plataforma = Platform(distancia_atual, altura, largura, altura_visual)
+            nova_plataforma = Platform(distancia_atual, altura, largura, altura_visual) #Cria plataforma
 
             if altura == 0:
                 self.ground_segments.append(nova_plataforma)
             else:
                 self.platforms.append(nova_plataforma)
 
-            #GERAÇÃO DE OBSTÁCULOS
+            #Geração de inimigos
             if random.random() < (0.2 + (self.dificuldade * 0.05)):
                 if largura > 150 and random.random() < 0.4:
                     pos_x = distancia_atual + (largura / 2) - 37
-                    #O cano agora nasce no topo da plataforma (altura + h). Se for solo (altura 0), ele ficará em y=100. Se for plataforma suspensa, ele ficará em y=altura+25.
+                    #O cano nasce no topo da plataforma (altura + h). Se for solo (altura 0), ele ficará em y=100. Se for plataforma suspensa, ele ficará em y=altura+25.
                     self.enemies2.append(Enemy2(pos_x, altura + nova_plataforma.h))
                 else:
                     self.enemies.append(Enemy(nova_plataforma))
 
-            #GERAÇÃO DE MOEDAS
+            #Geração de moedas
             if random.random() > 0.4:
                 #Moedas também ficam mais altas se houver um cano
                 offset_moeda = 180 if largura > 150 else 60
@@ -98,7 +97,7 @@ class LevelRandom:
         self.player.vel_y = 0
         self.player.on_ground = False
         self.camera_x = 0
-
+    #Move jogador, aplica gravidade, colisões e a câmera segue o jogador
     def update(self, window, dt, game):
         self.player.update(window, dt)
         self.player.y += self.player.vel_y * dt

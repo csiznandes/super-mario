@@ -12,9 +12,9 @@ class Game:
         self.width = width
         self.height = height
 
-        self.state = 0  #0 = menu, 1 = jogando, 2 = vitória
+        self.state = 0  #0 = menu, 1 = jogando, 2 = vitória, 3 = loja
 
-        #Imagens
+        #Imagens/texturas
         self.menu_bg = load_texture("assets/background_mickey.png")
         self.title_tex = load_texture("assets/mickey_bros.png")
         self.btn_start_tex = load_texture("assets/start_button.png")
@@ -27,13 +27,12 @@ class Game:
         self.current_level_num = 1
         self.level = LevelRandom(dificuldade=1)
 
-        #Score
+        #Pontuação
         self.score_system = Score(self.width, self.height)
 
         #Áudio
         self.musica_fundo = AudioMusica()
         self.musica_fundo.tocar()
-
         self.som_hit = AudioHitMickey()
 
         #Vidas
@@ -43,24 +42,24 @@ class Game:
 
         self.fall_limit = -150
         self.menu_timer = 0
-
+    #Reseta a posição do jogador
     def reset_player_position(self):
         self.level.start()
-
+    #Jogador perde uma vida
     def lose_life(self):
         if self.lives > 0:
             self.lives -= 1
             self.som_hit.tocar()
 
         self.reset_player_position()
-
+    #Reseta o jogo
     def reset_game(self):
         self.lives = 3
         self.score_system.reset()
         self.current_level_num = 1
         self.level = LevelRandom(dificuldade=1)
         self.level.start()
-
+    #Comprar vida
     def processar_compra_vida(self):
         if self.score_system.score >= 100:
             self.score_system.score -= 100
@@ -72,20 +71,20 @@ class Game:
             print("Saldo insuficiente. Retornando ao menu...")
             self.state = 0
             self.reset_game()
-
+    #Próxima fase
     def next_level(self):
         self.current_level_num += 1
 
-        if self.current_level_num <= 3:
+        if self.current_level_num <= 5:
             self.level = LevelRandom(dificuldade=self.current_level_num)
             self.level.start()
             print(f"\nCHECKPOINT ALCANÇADO")
             print(f"CARREGANDO FASE {self.current_level_num}...")
         else:
             self.state = 2
-
+    #Lógica principal
     def update(self, window, dt):
-        if self.state == 1:
+        if self.state == 1: #Se está jogando, atualiza fase, verifica queda e morte
             self.level.update(window, dt, self)
             player = self.level.player
 
@@ -93,7 +92,7 @@ class Game:
                 window,
                 f"Mickey Bros | FASE: {self.current_level_num} | Score: {self.score_system.score} | Vidas: {self.lives}"
             )
-
+            #Se cair, perde vida
             if player.y < self.fall_limit:
                 self.lose_life()
 

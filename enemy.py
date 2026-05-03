@@ -1,27 +1,26 @@
 from OpenGL.GL import *
 from texture import load_texture
 from audio import AudioHitEnemy
-
+#Inimigo que anda
 class Enemy:
     def __init__(self, platform):
+        #Tamanho
         self.w = 32
         self.h = 32
-
+        #Fica somente em cima da plataforma
         self.y = platform.y + platform.h
         self.x = platform.x + (platform.w / 2) - (self.w / 2)
-
         self.min_x = platform.x
         self.max_x = platform.x + platform.w - self.w
-
+        #Outras configurações
         self.speed = 100
         self.direction = 1
         self.facing_right = True
         self.ativo = True
-
         self.dead_timer = 0
         self.remove = False
         self.son_hit = AudioHitEnemy()
-
+        #Animação dos passos
         self.frames = [
             load_texture("assets/enemy/passo1.png"),
             load_texture("assets/enemy/passo2.png"),
@@ -41,12 +40,12 @@ class Enemy:
     def update(self, dt):
         if not self.ativo:
             self.current_texture = self.hit_texture
-            self.dead_timer += dt
+            self.dead_timer += dt #Tempo até desaparecer
 
             if self.dead_timer >= 0.3:
                 self.remove = True
             return
-
+        #Movimento com delta time
         self.x += self.speed * self.direction * dt
 
         if self.x >= self.max_x:
@@ -68,7 +67,7 @@ class Enemy:
                 self.frame_index = 0
 
             self.current_texture = self.frames[self.frame_index]
-
+    #Colisão com jogador AABB. Se jogador caiu por cima, mata inimigo e faz jogador quicar. Se não, jogador toma dano
     def check_collision_with_player(self, player, game):
         if not self.ativo:
             return
@@ -89,7 +88,7 @@ class Enemy:
             player.on_ground = False
         else:
             game.lose_life()
-
+    #Desativar inimigo
     def die(self):
         self.ativo = False
         self.current_texture = self.hit_texture

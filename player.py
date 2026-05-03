@@ -49,24 +49,24 @@ class Player:
         self.prev_y = self.y
 
         moving = False
-
+        #Move à esquerda
         if glfw.get_key(window, glfw.KEY_A) == glfw.PRESS:
             self.x -= self.speed * dt
             self.facing_right = False
             moving = True
-
+        #Move à direita
         if glfw.get_key(window, glfw.KEY_D) == glfw.PRESS:
             self.x += self.speed * dt
             self.facing_right = True
             moving = True
-
+        #Pulo
         if glfw.get_key(window, glfw.KEY_SPACE) == glfw.PRESS and self.on_ground:
             self.som_pulo.tocar()
             self.vel_y = self.jump_force
             self.on_ground = False
-
+        #Gravidade
         self.vel_y -= self.gravity * dt
-
+        #Troca de frames conforme anda
         if moving:
             self.frame_time += dt
 

@@ -4,7 +4,7 @@ from audio import AudioHitBafo
 
 class Enemy2:
     def __init__(self, x, y):
-        #Cano
+        #Posição do cano
         self.pipe_x = x
         self.pipe_y = y
         self.pipe_w = 74
@@ -15,26 +15,26 @@ class Enemy2:
         self.h = 58
         self.x = self.pipe_x + (self.pipe_w / 2) - (self.w / 2)
         self.som_hit = AudioHitBafo()
-
+        #Posição escondido e aparecendo
         self.hidden_y = self.pipe_y + 20
         self.out_y = self.pipe_y + self.pipe_h - 10
         self.y = self.hidden_y
 
         self.speed = 80
-        self.direction = 1  # 1 sobe, -1 desce
+        self.direction = 1  # 1 = sobe, -1 = desce
 
         self.wait_timer = 0
         self.wait_time = 1.2
-
+        #Carrega as texturas
         self.pipe_texture = load_texture("assets/enemy/cano.png")
         self.enemy_texture = load_texture("assets/enemy/bafo.png")
 
     def update(self, dt):
         self.wait_timer += dt
-
+        #Espera antes de sair
         if self.wait_timer < self.wait_time:
             return
-
+        #Movimento vertical
         self.y += self.speed * self.direction * dt
 
         if self.y >= self.out_y:
@@ -46,9 +46,8 @@ class Enemy2:
             self.y = self.hidden_y
             self.direction = 1
             self.wait_timer = 0
-
+    #Colisão com cano AABB
     def check_pipe_collision(self, player):
-        #Colisão sólida com o CANO
         colidiu = (
             player.x < self.pipe_x + self.pipe_w and
             player.x + player.w > self.pipe_x and
@@ -64,7 +63,7 @@ class Enemy2:
             player.y = self.pipe_y + self.pipe_h
             player.vel_y = 0
             player.on_ground = True
-
+    #Colisão com inimigo
     def check_enemy_collision(self, player, game):
         #Só dá dano se o inimigo estiver saindo do cano
         if self.y <= self.hidden_y + 10:
@@ -80,7 +79,6 @@ class Enemy2:
         if colidiu:
             game.lose_life()
             self.som_hit.tocar()
-
 
     def check_collision_with_player(self, player, game):
         self.check_pipe_collision(player)

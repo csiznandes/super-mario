@@ -1,10 +1,11 @@
 class Obstacle:
     def __init__(self, x, y, w, h):
+        #Posição e tamanho
         self.x = x
         self.y = y
         self.w = w
         self.h = h
-
+    #Colisão, mas contrária à AABB
     def check_collision(self, player, game):
         if (
             player.x + player.w < self.x or

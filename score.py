@@ -8,7 +8,7 @@ class Score:
         self.width = width
         self.height = height
 
-        #carregar números
+        #Cada múmero é uma imagem
         self.number_textures = {
             "0": load_texture("assets/numbers/number0.png"),
             "1": load_texture("assets/numbers/number1.png"),
@@ -41,7 +41,7 @@ class Score:
         start_y = self.height - 50
 
         glColor3f(1, 1, 1)
-
+        #Desenha número por número
         for i, digit in enumerate(score_text):
             texture = self.number_textures[digit]
 

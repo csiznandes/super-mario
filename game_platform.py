@@ -6,15 +6,15 @@ class Platform:
         self.h = h
 
     def check_collision(self, player):
-        #colisão horizontal
+        #Colisão horizontal
         if player.x + player.w <= self.x or player.x >= self.x + self.w:
             return
 
         topo = self.y + self.h
 
-        #só quando está caindo
+        #Só quando está caindo
         if player.vel_y <= 0:
-            #verifica se cruzou o topo vindo de cima
+            #Detecta se o jogador caiu em cima
             if player.prev_y >= topo and player.y <= topo:
                 player.y = topo
                 player.vel_y = 0
